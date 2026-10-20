@@ -1,0 +1,38 @@
+name: daily
+
+on:
+  schedule:
+    - cron: '17 0 * * *' # 08:17 Taiwan; GitHub may start it late, which is fine for guild sign-in
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  guild:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm start
+        env:
+          BAHAMUT_UID: ${{ secrets.BAHAMUT_UID }}
+          BAHAMUT_PWD: ${{ secrets.BAHAMUT_PWD }}
+          BAHAMUT_TOTP: ${{ secrets.BAHAMUT_TOTP }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+  # Public repos disable scheduled workflows after 60 days without activity.
+  # Re-enabling through the API is what keepalive actions do instead of empty commits.
+  keepalive:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/daily.yml/enable"
+        env:
+          GH_TOKEN: ${{ github.token }}
