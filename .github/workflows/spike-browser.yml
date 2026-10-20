@@ -1,0 +1,31 @@
+name: spike-browser
+
+on:
+  workflow_dispatch:
+    inputs:
+      headless:
+        description: Run Chromium headless instead of headed under Xvfb
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: sudo apt-get install -y xvfb
+      - run: xvfb-run -a npm run spike:browser
+        env:
+          HEADLESS: ${{ inputs.headless && '1' || '0' }}
+          BAHAMUT_UID: ${{ secrets.BAHAMUT_UID }}
+          BAHAMUT_PWD: ${{ secrets.BAHAMUT_PWD }}
+          BAHAMUT_TOTP: ${{ secrets.BAHAMUT_TOTP }}

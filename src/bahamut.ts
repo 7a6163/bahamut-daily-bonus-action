@@ -35,6 +35,11 @@ export class BahamutClient {
     }
   }
 
+  // For handing the login session to a browser context.
+  exportCookies(): { name: string; value: string }[] {
+    return Array.from(this.cookies, ([name, value]) => ({ name, value }));
+  }
+
   private cookieString(): string {
     return Array.from(this.cookies, ([name, value]) => `${name}=${value}`).join('; ');
   }
