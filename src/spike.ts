@@ -115,10 +115,13 @@ async function step(name: string, fn: () => Promise<unknown>): Promise<void> {
   try { await fn(); } catch (e) { console.log(`[${name}] threw ${e instanceof Error ? e.message : e}`); }
 }
 
+// Run 1 settled guild (reachable) and anime (challenged); select probes via PROBES, e.g. "guild,anime,ads".
+const probes = (process.env.PROBES || 'ads').split(',');
+
 await login();
-await step('guild', probeGuild);
-await step('anime', probeAnime);
-await step('ads', async () => {
+if (probes.includes('guild')) await step('guild', probeGuild);
+if (probes.includes('anime')) await step('anime', probeAnime);
+if (probes.includes('ads')) await step('ads', async () => {
   // Hypothesis (a): the CSRF check is double-submit, so any token matching the cookie works.
   if (await tryAds('ads-random', randomBytes(8).toString('hex'))) {
     console.log('[ads] random token works');

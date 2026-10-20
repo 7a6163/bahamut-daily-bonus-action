@@ -2,6 +2,10 @@ name: spike
 
 on:
   workflow_dispatch:
+    inputs:
+      probes:
+        description: Comma-separated probes (guild, anime, ads)
+        default: ads
 
 permissions:
   contents: read
@@ -21,3 +25,4 @@ jobs:
           BAHAMUT_UID: ${{ secrets.BAHAMUT_UID }}
           BAHAMUT_PWD: ${{ secrets.BAHAMUT_PWD }}
           BAHAMUT_TOTP: ${{ secrets.BAHAMUT_TOTP }}
+          PROBES: ${{ inputs.probes }}
