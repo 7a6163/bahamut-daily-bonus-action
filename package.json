@@ -1,0 +1,19 @@
+{
+  "name": "bahamut-daily-bonus-action",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "spike": "node src/spike.ts",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "otpauth": "^9.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "typescript": "^5.9.3"
+  }
+}
