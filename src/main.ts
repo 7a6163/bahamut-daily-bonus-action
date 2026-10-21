@@ -8,19 +8,25 @@ if (!BAHAMUT_UID || !BAHAMUT_PWD) {
 }
 
 const client = new BahamutClient({ uid: BAHAMUT_UID, pwd: BAHAMUT_PWD, totp: BAHAMUT_TOTP });
-const results: string[] = [];
+const rewards: string[] = [];
 
 try {
   await client.login();
-  results.push('✅ 登入成功');
-  results.push(await client.signGuild());
+  rewards.push(await client.signMain());
+  rewards.push(await client.signAds());
+  rewards.push(await client.signGuild());
 } catch (error) {
-  results.push(`❌ 錯誤: ${error instanceof Error ? error.message : '未知錯誤'}`);
+  rewards.push(`❌ 登入失敗: ${error instanceof Error ? error.message : '未知錯誤'}`);
 }
 
-const failed = results.some(r => r.startsWith('❌'));
-console.log(results.join('\n'));
-await notify(failed ? '巴哈姆特公會簽到失敗' : '巴哈姆特公會簽到完成', results.join('\n'));
+const failed = rewards.some(r => r.startsWith('❌'));
+const message = rewards.join('\n');
+console.log(message);
+
+// The workflow runs several times a day; later runs only see ⚠️ (already done), so stay quiet then.
+if (rewards.some(r => r.startsWith('✅') || r.startsWith('❌'))) {
+  await notify(failed ? '巴哈姆特每日簽到失敗' : '巴哈姆特每日簽到完成', message);
+}
 
 // A red run makes failures visible in the Actions tab and GitHub's failure emails.
 if (failed) process.exit(1);

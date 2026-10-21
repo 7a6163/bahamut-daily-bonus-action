@@ -2,14 +2,18 @@ name: daily
 
 on:
   schedule:
-    - cron: '17 0 * * *' # 08:17 Taiwan; GitHub may start it late, which is fine for guild sign-in
+    # 08:17 / 12:17 / 20:17 Taiwan. GitHub can delay or drop scheduled runs, so later runs
+    # retry anything missed; already-claimed rewards just come back as ⚠️.
+    - cron: '17 0 * * *'
+    - cron: '17 4 * * *'
+    - cron: '17 12 * * *'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  guild:
+  sign:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
