@@ -7,13 +7,10 @@
   },
   "scripts": {
     "start": "node src/main.ts",
-    "spike": "node src/spike.ts",
-    "typecheck": "tsc",
-    "spike:browser": "node src/spike-browser.ts"
+    "typecheck": "tsc"
   },
   "dependencies": {
-    "otpauth": "^9.5.2",
-    "playwright": "1.64.0"
+    "otpauth": "^9.5.2"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",
